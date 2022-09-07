@@ -9,23 +9,29 @@ const reducer = (state = initialState, action) => {
         case 'HEROES_FETCHING':
             return {
                 ...state,
-                heroesLoadingStatus: 'loading'
+                heroesLoadingStatus: 'loading',
             }
         case 'HEROES_FETCHED':
             return {
                 ...state,
                 heroes: action.payload,
-                heroesLoadingStatus: 'idle'
+                heroesLoadingStatus: 'idle',
             }
         case 'HEROES_FETCHING_ERROR':
             return {
                 ...state,
-                heroesLoadingStatus: 'error'
+                heroesLoadingStatus: 'error',
             }
-        case 'HERO_DELETE':
+        case 'HERO_DELETING':
+            return {
+                ...state,
+                heroesLoadingStatus: 'loading',
+            }
+        case 'HERO_DELETED':
             return {
                 ...state,
                 heroes: state.heroes.filter((hero) => hero.id !== action.payload),
+                heroesLoadingStatus: 'idle',
             }
         default: return state
     }
