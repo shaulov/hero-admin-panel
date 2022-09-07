@@ -29,3 +29,34 @@ export const heroDelete = (hero) => {
         payload: hero,
     }
 }
+
+export const heroPosting = () => {
+    return {
+        type: 'HERO_POSTING',
+    }
+}
+
+export const heroPosted = () => {
+    return {
+        type: 'HERO_POSTED',
+    }
+}
+
+export const filtersFetching = () => {
+    return {
+        type: 'FILTERS_FETCHING',
+    }
+}
+
+export const filtersFetched = (filters) => {
+    return {
+        type: 'FILTERS_FETCHED',
+        payload: filters,
+    }
+}
+
+export const filtersFetchingError = () => {
+    return {
+        type: 'FILTERS_FETCHING_ERROR',
+    }
+}
