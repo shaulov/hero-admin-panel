@@ -2,7 +2,7 @@ import {useHttp} from '../../hooks/http.hook';
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { heroesFetching, heroesFetched, heroesFetchingError } from '../../actions';
+import { heroesFetching, heroesFetched, heroesFetchingError, heroDelete } from '../../actions';
 import HeroesListItem from "../heroesListItem/HeroesListItem";
 import Spinner from '../spinner/Spinner';
 
@@ -32,7 +32,7 @@ const HeroesList = () => {
     }
 
     const onDeleteClick = (id) => {
-        console.log(id);
+        dispatch(heroDelete(id));
     }
 
     const renderHeroesList = (arr) => {
