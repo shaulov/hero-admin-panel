@@ -32,7 +32,13 @@ const HeroesAddForm = () => {
         dispatch(heroPosting());
         request('http://localhost:3001/heroes', 'POST', JSON.stringify(formData))
             .then(() => {
-                dispatch(heroPosted());
+                dispatch(heroPosted(formData));
+                setFormData({
+                    id: uuidv4(),
+                    name: '',
+                    description: '',
+                    element: '',
+                })
                 formRef.reset();
             })
             .catch((err) => console.log(err));

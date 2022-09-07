@@ -36,9 +36,10 @@ export const heroPosting = () => {
     }
 }
 
-export const heroPosted = () => {
+export const heroPosted = (hero) => {
     return {
         type: 'HERO_POSTED',
+        payload: hero,
     }
 }
 
@@ -58,5 +59,12 @@ export const filtersFetched = (filters) => {
 export const filtersFetchingError = () => {
     return {
         type: 'FILTERS_FETCHING_ERROR',
+    }
+}
+
+export const activeFilterChanged = (filter) => {
+    return {
+        type: 'ACTIVE_FILTER_CHANGED',
+        payload: filter,
     }
 }
