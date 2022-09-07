@@ -1,5 +1,24 @@
 {
-  "heroes": [],
+  "heroes": [
+    {
+      "id": "b5f782f3-db58-4b2d-b943-df08c838e233",
+      "name": "Аанг",
+      "description": "Аватар, последний маг воздуха",
+      "element": "wind"
+    },
+    {
+      "id": "05674ead-d64b-4684-876e-e1fa69258ab4",
+      "name": "Зуко",
+      "description": "Маг огня, император Страны Огня",
+      "element": "fire"
+    },
+    {
+      "id": "8efcf9b8-0929-4fa0-9ffb-9d1f03f0d48a",
+      "name": "Катара",
+      "description": "Маг племени воды",
+      "element": "water"
+    }
+  ],
   "filters": [
     {
       "name": "all",
