@@ -36,9 +36,10 @@ export const heroPosting = () => {
     }
 }
 
-export const heroPosted = () => {
+export const heroPosted = (hero) => {
     return {
         type: 'HERO_POSTED',
+        payload: hero,
     }
 }
 

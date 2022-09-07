@@ -1,11 +1,11 @@
 import {useHttp} from '../../hooks/http.hook';
 import { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { filtersFetching, filtersFetched, filtersFetchingError } from '../../actions';
+import { filtersFetching, filtersFetched, filtersFetchingError, activeFilterChanged } from '../../actions';
 import Spinner from '../spinner/Spinner';
 
 const HeroesFilters = () => {
-    const {filters, filtersLoadingStatus} = useSelector(state => state);
+    const {filters, filtersLoadingStatus, activeFilter} = useSelector(state => state);
     const dispatch = useDispatch();
     const {request} = useHttp();
 
@@ -25,14 +25,26 @@ const HeroesFilters = () => {
         return <h5 className="text-center mt-5">Ошибка загрузки</h5>
     }
 
+    const handleFilterClick = (filterName) => {
+        dispatch(activeFilterChanged(filterName));
+    }
+
     const renderFilters = (arr) => {
         if (arr.length === 0) {
             return <h5 className="text-center mt-5">Фильтры не найдены</h5>
         }
 
         return arr.map(({name, label, className}) => {
-            const elementClass = `btn ${className}`;
-            return (<button key={name} className={elementClass}>{label}</button>);
+            const elementClass = `btn ${className} ${name === activeFilter ? 'active' : ''}`;
+            return (
+                <button 
+                    key={name} 
+                    className={elementClass}
+                    onClick={() => handleFilterClick(name)}
+                >
+                    {label}
+                </button>
+            );
         })
     }
 

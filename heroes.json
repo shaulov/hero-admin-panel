@@ -1,18 +1,5 @@
 {
-  "heroes": [
-    {
-      "id": 3,
-      "name": "Первый герой",
-      "description": "Первый герой в рейтинге!",
-      "element": "water"
-    },
-    {
-      "id": "e5e4faa2-d986-4742-af69-0db64c129c30",
-      "name": "Аанг",
-      "description": "Всем привет, я Аватар Аанг - последний маг воздуха",
-      "element": "wind"
-    }
-  ],
+  "heroes": [],
   "filters": [
     {
       "name": "all",
