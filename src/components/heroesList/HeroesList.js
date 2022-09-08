@@ -10,9 +10,9 @@ import './heroes-list.scss';
 
 const HeroesList = () => {
     const filteredHeroes = useSelector(state => {
-        return state.activeFilter === 'all' ? state.heroes : state.heroes.filter((hero) => hero.element === state.activeFilter);
+        return state.filters.activeFilter === 'all' ? state.heroes.heroes : state.heroes.heroes.filter((hero) => hero.element === state.filters.activeFilter);
     });
-    const heroesLoadingStatus = useSelector(state => state.heroesLoadingStatus);
+    const heroesLoadingStatus = useSelector(state => state.heroes.heroesLoadingStatus);
     const dispatch = useDispatch();
     const {request} = useHttp();
 
