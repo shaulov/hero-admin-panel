@@ -17,6 +17,12 @@
       "name": "Катара",
       "description": "Маг племени воды",
       "element": "water"
+    },
+    {
+      "id": "53f757eb-5da3-4d87-ab94-fa34f6c798fb",
+      "name": "Тофф",
+      "description": "Маг земли, слепой воин",
+      "element": "earth"
     }
   ],
   "filters": [
