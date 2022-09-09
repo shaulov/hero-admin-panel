@@ -6,7 +6,7 @@ import { heroPosting, heroPosted } from '../../actions';
 import Spinner from '../spinner/Spinner';
 
 const HeroesAddForm = () => {
-    const {heroesLoadingStatus, filters, filtersLoadingStatus} = useSelector(state => state);
+    const {filters, filtersLoadingStatus} = useSelector(state => state.filters);
     const [formData, setFormData] = useState({
         id: uuidv4(),
         name: '',
@@ -17,7 +17,7 @@ const HeroesAddForm = () => {
     const dispatch = useDispatch();
     const {request} = useHttp();
 
-    if (heroesLoadingStatus === "loading") {
+    if (filtersLoadingStatus === "loading") {
         return <Spinner/>;
     }
 
