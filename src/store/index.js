@@ -1,6 +1,6 @@
 import { configureStore } from '@reduxjs/toolkit';
-import heroes from './heroesSlice/heroes';
-import filters from './filtersSlice/filters';
+import heroes from './heroesSlice/heroesSlice';
+import filters from './filtersSlice/filtersSlice';
 
 const sringMiddleWare = (store) => (dispatch) => (action) => {
     if (typeof action === 'string') {
