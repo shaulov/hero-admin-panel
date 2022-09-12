@@ -19,10 +19,7 @@ const HeroesAddForm = () => {
     }
 
     const resetForm = () => {
-        inputNameRef.current.value = '';
-        textAreaRef.current.value = '';
-        selectRef.current.value = 'Я владею элементом...';
-        formRef.reset();
+        formRef.current.reset();
     }
 
     const handleSubmit = (evt) => {
