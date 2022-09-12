@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { CSSTransition, TransitionGroup } from 'react-transition-group';
 import { createSelector } from 'reselect';
 
-import { heroesFetching, heroesFetched, heroesFetchingError, heroDeleting, heroDelete } from '../../actions';
+import { fetchHeroes, deleteHero } from '../../actions';
 import HeroesListItem from "../heroesListItem/HeroesListItem";
 import Spinner from '../spinner/Spinner';
 import './heroes-list.scss';
@@ -21,11 +21,7 @@ const HeroesList = () => {
     const {request} = useHttp();
 
     useEffect(() => {
-        dispatch(heroesFetching());
-        request('http://localhost:3001/heroes')
-            .then(data => dispatch(heroesFetched(data)))
-            .catch(() => dispatch(heroesFetchingError()));
-
+        dispatch(fetchHeroes(request));
         // eslint-disable-next-line
     }, []);
 
@@ -36,10 +32,7 @@ const HeroesList = () => {
     }
 
     const onDeleteClick = (id) => {
-        dispatch(heroDeleting());
-        request(`http://localhost:3001/heroes/${id}`, 'DELETE')
-            .then(dispatch(heroDelete(id)))
-            .catch((err) => console.log(err));
+        dispatch(deleteHero(request, id));
     }
 
     const renderHeroesList = (arr) => {

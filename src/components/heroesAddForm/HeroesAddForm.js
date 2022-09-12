@@ -1,19 +1,16 @@
 import {useHttp} from '../../hooks/http.hook';
-import { useState, useRef } from 'react';
+import { useRef } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { v4 as uuidv4 } from 'uuid';
-import { heroPosting, heroPosted } from '../../actions';
+import { postHero } from '../../actions';
 import Spinner from '../spinner/Spinner';
 
 const HeroesAddForm = () => {
-    const {filters, filtersLoadingStatus} = useSelector(state => state.filters);
-    const [formData, setFormData] = useState({
-        id: uuidv4(),
-        name: '',
-        description: '',
-        element: '',
-    });
     const formRef = useRef(null);
+    const inputNameRef = useRef(null);
+    const selectRef = useRef(null);
+    const textAreaRef = useRef(null);
+    const {filters, filtersLoadingStatus} = useSelector(state => state.filters);
     const dispatch = useDispatch();
     const {request} = useHttp();
 
@@ -21,27 +18,23 @@ const HeroesAddForm = () => {
         return <Spinner/>;
     }
 
-    const handleChange = (evt) => {
-        const {value, name} = evt.target;
-        setFormData({...formData, [name]: value,});
-    };
+    const resetForm = () => {
+        inputNameRef.current.value = '';
+        textAreaRef.current.value = '';
+        selectRef.current.value = 'Я владею элементом...';
+        formRef.reset();
+    }
 
     const handleSubmit = (evt) => {
         evt.preventDefault();
 
-        dispatch(heroPosting());
-        request('http://localhost:3001/heroes', 'POST', JSON.stringify(formData))
-            .then(() => {
-                dispatch(heroPosted(formData));
-                setFormData({
-                    id: uuidv4(),
-                    name: '',
-                    description: '',
-                    element: '',
-                })
-                formRef.reset();
-            })
-            .catch((err) => console.log(err));
+        const formData = {
+            id: uuidv4(),
+            name: inputNameRef.current.value,
+            description: textAreaRef.current.value,
+            element: selectRef.current.value,
+        }
+        dispatch(postHero(request, formData, resetForm));
     }
 
     const renerFilters = () => {
@@ -68,35 +61,37 @@ const HeroesAddForm = () => {
                 <label htmlFor="name" className="form-label fs-4">Имя нового героя</label>
                 <input 
                     required
+                    ref={inputNameRef}
                     type="text" 
                     name="name" 
                     className="form-control" 
                     id="name" 
                     placeholder="Как меня зовут?"
-                    onChange={handleChange}/>
+                />
             </div>
 
             <div className="mb-3">
                 <label htmlFor="description" className="form-label fs-4">Описание</label>
                 <textarea
                     required
+                    ref={textAreaRef}
                     name="description" 
                     className="form-control" 
                     id="text" 
                     placeholder="Что я умею?"
                     style={{"height": '130px'}}
-                    onChange={handleChange}/>
+                />
             </div>
 
             <div className="mb-3">
                 <label htmlFor="element" className="form-label">Выбрать элемент героя</label>
                 <select 
                     required
+                    ref={selectRef}
                     className="form-select" 
                     id="element" 
                     name="element"
-                    value={formData.element}
-                    onChange={handleChange}>
+                >
                         <option>Я владею элементом...</option>
                         {renerFilters()}
                 </select>
