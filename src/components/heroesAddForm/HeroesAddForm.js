@@ -2,7 +2,7 @@ import {useHttp} from '../../hooks/http.hook';
 import { useState, useRef } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { v4 as uuidv4 } from 'uuid';
-import { heroPosting, heroPosted } from '../../actions';
+import { postHero } from '../../actions';
 import Spinner from '../spinner/Spinner';
 
 const HeroesAddForm = () => {
@@ -26,22 +26,19 @@ const HeroesAddForm = () => {
         setFormData({...formData, [name]: value,});
     };
 
+    const resetForm = () => {
+        setFormData({
+            id: uuidv4(),
+            name: '',
+            description: '',
+            element: '',
+        })
+        formRef.reset();
+    }
+
     const handleSubmit = (evt) => {
         evt.preventDefault();
-
-        dispatch(heroPosting());
-        request('http://localhost:3001/heroes', 'POST', JSON.stringify(formData))
-            .then(() => {
-                dispatch(heroPosted(formData));
-                setFormData({
-                    id: uuidv4(),
-                    name: '',
-                    description: '',
-                    element: '',
-                })
-                formRef.reset();
-            })
-            .catch((err) => console.log(err));
+        dispatch(postHero(request, formData, resetForm));
     }
 
     const renerFilters = () => {
