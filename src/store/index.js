@@ -1,6 +1,6 @@
 import { configureStore } from '@reduxjs/toolkit';
-import heroesReducer from '../reducers/heroes';
-import filtersReducer from '../reducers/filters';
+import heroes from '../reducers/heroes';
+import filters from '../reducers/filters';
 
 const sringMiddleWare = (store) => (dispatch) => (action) => {
     if (typeof action === 'string') {
@@ -13,8 +13,8 @@ const sringMiddleWare = (store) => (dispatch) => (action) => {
 }
 
 const store = configureStore({
-    reducer: {heroesReducer, filtersReducer},
-    middleware: getDefaultMiddleware => getDefaultMiddleware().concat(sringMiddleWare),
+    reducer: {heroes, filters},
+    middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(sringMiddleWare),
     devTools: process.env.NODE_ENV !== 'production',
 });
 
