@@ -1,8 +1,7 @@
-import {useHttp} from '../../hooks/http.hook';
 import { useRef } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { v4 as uuidv4 } from 'uuid';
-import { postHero } from '../../actions';
+import { postHero } from '../../store/heroesSlice/heroesSlice';
 import Spinner from '../spinner/Spinner';
 
 const HeroesAddForm = () => {
@@ -12,20 +11,16 @@ const HeroesAddForm = () => {
     const textAreaRef = useRef(null);
     const {filters, filtersLoadingStatus} = useSelector(state => state.filters);
     const dispatch = useDispatch();
-    const {request} = useHttp();
 
     if (filtersLoadingStatus === "loading") {
         return <Spinner/>;
     }
 
     const resetForm = () => {
-        inputNameRef.current.value = '';
-        textAreaRef.current.value = '';
-        selectRef.current.value = 'Я владею элементом...';
-        formRef.reset();
+        formRef.current.reset();
     }
 
-    const handleSubmit = (evt) => {
+    const handleSubmit = async (evt) => {
         evt.preventDefault();
 
         const formData = {
@@ -34,7 +29,17 @@ const HeroesAddForm = () => {
             description: textAreaRef.current.value,
             element: selectRef.current.value,
         }
-        dispatch(postHero(request, formData, resetForm));
+
+        try {
+            await dispatch(postHero(formData))
+                .then((response) => {
+                    if (response.meta.requestStatus === 'fulfilled') {
+                        resetForm();
+                    }
+                });
+        } catch (err) {
+            console.log(err);
+        }
     }
 
     const renerFilters = () => {

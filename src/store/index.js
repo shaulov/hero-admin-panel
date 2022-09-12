@@ -1,7 +1,6 @@
-import { combineReducers, createStore, compose, applyMiddleware } from 'redux';
-import thunk from 'redux-thunk';
-import heroesReducer from '../reducers/heroes';
-import filtersReducer from '../reducers/filters';
+import { configureStore } from '@reduxjs/toolkit';
+import heroes from './heroesSlice/heroesSlice';
+import filters from './filtersSlice/filtersSlice';
 
 const sringMiddleWare = (store) => (dispatch) => (action) => {
     if (typeof action === 'string') {
@@ -13,12 +12,10 @@ const sringMiddleWare = (store) => (dispatch) => (action) => {
     return dispatch(action);
 }
 
-const store = createStore(
-    combineReducers({heroes: heroesReducer, filters: filtersReducer}),
-    compose(
-        applyMiddleware(thunk, sringMiddleWare),
-        window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__(),
-    ),
-);
+const store = configureStore({
+    reducer: {heroes, filters},
+    middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(sringMiddleWare),
+    devTools: process.env.NODE_ENV !== 'production',
+});
 
 export default store;
