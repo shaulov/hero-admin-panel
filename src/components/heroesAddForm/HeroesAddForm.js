@@ -2,7 +2,7 @@ import {useHttp} from '../../hooks/http.hook';
 import { useRef } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { v4 as uuidv4 } from 'uuid';
-import { postHero } from '../../actions';
+import { postHero } from '../../store/actions';
 import Spinner from '../spinner/Spinner';
 
 const HeroesAddForm = () => {
