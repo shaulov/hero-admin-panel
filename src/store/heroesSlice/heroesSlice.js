@@ -4,6 +4,7 @@ import {useHttp} from '../../hooks/http.hook';
 const initialState = {
     heroes: [],
     heroesLoadingStatus: 'idle',
+    heroDeletingStatus: 'idle',
 }
 
 export const fetchHeroes = createAsyncThunk(
@@ -14,25 +15,26 @@ export const fetchHeroes = createAsyncThunk(
     }
 );
 
+export const deleteHero = createAsyncThunk(
+    'heroes/deleteHero',
+    async (id) => {
+        const {request} = useHttp();
+        return await request(`http://localhost:3001/heroes/${id}`, 'DELETE') ;
+    }
+)
+
+export const postHero = createAsyncThunk(
+    'heroes/postHero',
+    async (formData) => {
+        const {request} = useHttp();
+        return await request('http://localhost:3001/heroes', 'POST', JSON.stringify(formData));
+    }
+);
+
 const heroesSlice = createSlice({
     name: 'heroes',
     initialState,
-    redicers: {
-        heroDeleting: (state) => {
-            state.heroesLoadingStatus = 'loading';
-        },
-        heroDelete: (state, action) => {
-            state.heroes = state.heroes.filter((hero) => hero.id !== action.payload);
-            state.heroesLoadingStatus = 'idle';
-        },
-        heroPosting: (state) => {
-            state.heroesLoadingStatus = 'loading';
-        },
-        heroPosted: (state, action) => {
-            state.heroesLoadingStatus = 'idle';
-            state.heroes.push(action.payload);
-        },
-    },
+    reducers: {},
     extraReducers: (builder) => {
         builder
             .addCase(fetchHeroes.pending, (state) => {
@@ -45,12 +47,27 @@ const heroesSlice = createSlice({
             .addCase(fetchHeroes.rejected, (state) => {
                 state.heroesLoadingStatus = 'error';
             })
+            .addCase(deleteHero.pending, (state) => {
+                state.heroDeletingStatus = 'loading';
+            })
+            .addCase(deleteHero.fulfilled, (state, action) => {
+                state.heroDeletingStatus = 'idle';
+                state.heroes = state.heroes.filter((hero) => hero.id !== action.payload);
+            })
+            .addCase(deleteHero.rejected, (state) => {
+                state.heroDeletingStatus = 'error';
+            })
+            .addCase(postHero.pending, (state) => {
+                state.heroesLoadingStatus = 'loading';
+            })
+            .addCase(postHero.fulfilled, (state, action) => {
+                state.heroesLoadingStatus = 'idle';
+                state.heroes.push(action.payload);
+            })
             .addDefaultCase(() => {});
     },
 });
 
-const {actions, reducer} = heroesSlice;
+const {reducer} = heroesSlice;
 
 export default reducer;
-
-export const {heroesFetching, heroesFetched, heroesFetchingError, heroDeleting, heroDelete, heroPosting, heroPosted} = actions;
