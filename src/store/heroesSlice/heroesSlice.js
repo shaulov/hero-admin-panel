@@ -4,7 +4,6 @@ import {useHttp} from '../../hooks/http.hook';
 const initialState = {
     heroes: [],
     heroesLoadingStatus: 'idle',
-    heroDeletingStatus: 'idle',
 }
 
 export const fetchHeroes = createAsyncThunk(
@@ -17,17 +16,17 @@ export const fetchHeroes = createAsyncThunk(
 
 export const deleteHero = createAsyncThunk(
     'heroes/deleteHero',
-    async (id) => {
+    (id) => {
         const {request} = useHttp();
-        return await request(`http://localhost:3001/heroes/${id}`, 'DELETE') ;
+        return request(`http://localhost:3001/heroes/${id}`, 'DELETE') ;
     }
 )
 
 export const postHero = createAsyncThunk(
     'heroes/postHero',
-    async (formData) => {
+    (formData) => {
         const {request} = useHttp();
-        return await request('http://localhost:3001/heroes', 'POST', JSON.stringify(formData));
+        return request('http://localhost:3001/heroes', 'POST', JSON.stringify(formData));
     }
 );
 
@@ -47,21 +46,10 @@ const heroesSlice = createSlice({
             .addCase(fetchHeroes.rejected, (state) => {
                 state.heroesLoadingStatus = 'error';
             })
-            .addCase(deleteHero.pending, (state) => {
-                state.heroDeletingStatus = 'loading';
-            })
             .addCase(deleteHero.fulfilled, (state, action) => {
-                state.heroDeletingStatus = 'idle';
-                state.heroes = state.heroes.filter((hero) => hero.id !== action.payload);
-            })
-            .addCase(deleteHero.rejected, (state) => {
-                state.heroDeletingStatus = 'error';
-            })
-            .addCase(postHero.pending, (state) => {
-                state.heroesLoadingStatus = 'loading';
+                state.heroes = state.heroes.filter((hero) => hero.id !== action.meta.arg);
             })
             .addCase(postHero.fulfilled, (state, action) => {
-                state.heroesLoadingStatus = 'idle';
                 state.heroes.push(action.payload);
             })
             .addDefaultCase(() => {});
