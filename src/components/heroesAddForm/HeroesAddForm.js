@@ -1,7 +1,9 @@
 import { useRef } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { v4 as uuidv4 } from 'uuid';
+import store from '../../store';
 import { postHero } from '../../store/heroesSlice/heroesSlice';
+import { selectAll } from '../../store/filtersSlice/filtersSlice';
 import Spinner from '../spinner/Spinner';
 
 const HeroesAddForm = () => {
@@ -9,7 +11,8 @@ const HeroesAddForm = () => {
     const inputNameRef = useRef(null);
     const selectRef = useRef(null);
     const textAreaRef = useRef(null);
-    const {filters, filtersLoadingStatus} = useSelector(state => state.filters);
+    const {filtersLoadingStatus} = useSelector(state => state.filters);
+    const filters = selectAll(store.getState());
     const dispatch = useDispatch();
 
     if (filtersLoadingStatus === "loading") {
@@ -42,11 +45,11 @@ const HeroesAddForm = () => {
         }
     }
 
-    const renerFilters = () => {
-        if (filtersLoadingStatus === 'loading') {
+    const renderFilters = (filters, status) => {
+        if (status === 'loading') {
             return <option>Загрузка элементов...</option>
         }
-        if (filtersLoadingStatus === 'error') {
+        if (status === 'error') {
             return <option>Ошибка загрузки</option>
         }
         
@@ -98,7 +101,7 @@ const HeroesAddForm = () => {
                     name="element"
                 >
                         <option>Я владею элементом...</option>
-                        {renerFilters()}
+                        {renderFilters(filters, filtersLoadingStatus)}
                 </select>
             </div>
 
