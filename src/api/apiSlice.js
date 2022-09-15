@@ -12,12 +12,19 @@ export const apiSlice = createApi({
         createHero: builder.mutation({
             query: (hero) => ({
                 url: '/heroes',
-                method: 'post',
+                method: 'POST',
                 body: hero,
+            }),
+            invalidatesTags: ['Heroes'],
+        }),
+        deleteHero: builder.mutation({
+            query: (id) => ({
+                url: `/heroes/${id}`,
+                method: 'DELETE',
             }),
             invalidatesTags: ['Heroes'],
         }),
     }),
 });
 
-export const {useGetHeroesQuery, useCreateHeroMutation} = apiSlice;
+export const {useGetHeroesQuery, useCreateHeroMutation, useDeleteHeroMutation} = apiSlice;

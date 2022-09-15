@@ -1,15 +1,15 @@
-import { useEffect, useCallback, useMemo } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useCallback, useMemo } from 'react';
+import { useSelector } from 'react-redux';
 import { CSSTransition, TransitionGroup } from 'react-transition-group';
 
-import { fetchHeroes, deleteHero } from '../../store/heroesSlice/heroesSlice';
-import { useGetHeroesQuery } from '../../api/apiSlice';
+import { useGetHeroesQuery, useDeleteHeroMutation } from '../../api/apiSlice';
 import HeroesListItem from "../heroesListItem/HeroesListItem";
 import Spinner from '../spinner/Spinner';
 import './heroes-list.scss';
 
 const HeroesList = () => {
     const {data: heroes = [], isLoading, isError} = useGetHeroesQuery();
+    const [deleteHero] = useDeleteHeroMutation();
     const activeFilter = useSelector(state => state.filters.activeFilter);
     const filteredHeroes = useMemo(
         () => {
@@ -18,15 +18,9 @@ const HeroesList = () => {
         },
         [heroes, activeFilter]
     );
-    const dispatch = useDispatch();
 
     const onDeleteClick = useCallback((id) => {
-        dispatch(deleteHero(id));
-        // eslint-disable-next-line
-    }, []);
-
-    useEffect(() => {
-        dispatch(fetchHeroes());
+        deleteHero(id);
         // eslint-disable-next-line
     }, []);
 
