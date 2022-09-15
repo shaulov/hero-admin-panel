@@ -1,9 +1,6 @@
 import { useState, useRef } from 'react';
-import { useSelector } from 'react-redux';
 import { v4 as uuidv4 } from 'uuid';
-import store from '../../store';
-import { selectAll } from '../../store/filtersSlice/filtersSlice';
-import { useCreateHeroMutation } from '../../api/apiSlice';
+import { useCreateHeroMutation, useGetFiltersQuery } from '../../api/apiSlice';
 import Spinner from '../spinner/Spinner';
 
 const HeroesAddForm = () => {
@@ -14,11 +11,10 @@ const HeroesAddForm = () => {
         element: '',
     })
     const formRef = useRef(null);
-    const [createHero, {isLoading}] = useCreateHeroMutation();
-    const {filtersLoadingStatus} = useSelector(state => state.filters);
-    const filters = selectAll(store.getState());
+    const [createHero, {isLoading: isHeroesLoading}] = useCreateHeroMutation();
+    const {data: filters = [], isLoading: isFiltersLoading, isError: isFiltersError} = useGetFiltersQuery();
 
-    if (isLoading) {
+    if (isHeroesLoading) {
         return <Spinner/>;
     }
 
@@ -44,11 +40,11 @@ const HeroesAddForm = () => {
         resetForm();
     }
 
-    const renderFilters = (filters, status) => {
-        if (status === 'loading') {
+    const renderFilters = (filters) => {
+        if (isFiltersLoading) {
             return <option>Загрузка элементов...</option>
         }
-        if (status === 'error') {
+        if (isFiltersError) {
             return <option>Ошибка загрузки</option>
         }
         
@@ -100,7 +96,7 @@ const HeroesAddForm = () => {
                     onChange={handleChange}
                 >
                         <option>Я владею элементом...</option>
-                        {renderFilters(filters, filtersLoadingStatus)}
+                        {renderFilters(filters)}
                 </select>
             </div>
 
