@@ -8,6 +8,7 @@
 - Interaction with components (CRUD)
 - Interaction with database (heroes.json)
 - Additional functions (filter, animation and etc.)
+- Transition from Redux to RTK and then partially to RTK Query
 
 ## Project setup
 
