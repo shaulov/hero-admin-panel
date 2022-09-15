@@ -23,6 +23,24 @@
       "name": "Тофф",
       "description": "Маг земли, слепой воин",
       "element": "earth"
+    },
+    {
+      "id": "33bddb34-7b12-44a6-b449-08663ba9c604",
+      "name": "Мистер Шмистер",
+      "description": "dsfdasfdsfafdfsf",
+      "element": "fire"
+    },
+    {
+      "id": "e0113e52-2ae2-4fa2-b563-5ecd01784f99",
+      "name": "Мистер Шмистер",
+      "description": "asdgasdffasffdsf",
+      "element": "earth"
+    },
+    {
+      "id": "67b010bd-82f8-4fc0-b1bf-0c2c434ed5a3",
+      "name": "test",
+      "description": "sadgasgdasdafsdf",
+      "element": "water"
     }
   ],
   "filters": [
