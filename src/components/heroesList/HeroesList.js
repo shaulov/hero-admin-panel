@@ -1,18 +1,29 @@
-import { useEffect } from 'react';
+import { useEffect, useCallback, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { CSSTransition, TransitionGroup } from 'react-transition-group';
 
-import { fetchHeroes, deleteHero, filteredHeroesSelector } from '../../store/heroesSlice/heroesSlice';
+import { fetchHeroes, deleteHero } from '../../store/heroesSlice/heroesSlice';
 import { useGetHeroesQuery } from '../../api/apiSlice';
 import HeroesListItem from "../heroesListItem/HeroesListItem";
 import Spinner from '../spinner/Spinner';
 import './heroes-list.scss';
 
 const HeroesList = () => {
-    const {data: heroes = [], isFetching, isLoading, isSuccess, isError, error} = useGetHeroesQuery();
-    const filteredHeroes = useSelector(filteredHeroesSelector);
-    const heroesLoadingStatus = useSelector(state => state.heroes.heroesLoadingStatus);
+    const {data: heroes = [], isLoading, isError} = useGetHeroesQuery();
+    const activeFilter = useSelector(state => state.filters.activeFilter);
+    const filteredHeroes = useMemo(
+        () => {
+            const filteredHeroes = heroes.slice();
+            return activeFilter === 'all' ? filteredHeroes : filteredHeroes.filter((hero) => hero.element === activeFilter);
+        },
+        [heroes, activeFilter]
+    );
     const dispatch = useDispatch();
+
+    const onDeleteClick = useCallback((id) => {
+        dispatch(deleteHero(id));
+        // eslint-disable-next-line
+    }, []);
 
     useEffect(() => {
         dispatch(fetchHeroes());
@@ -23,10 +34,6 @@ const HeroesList = () => {
         return <Spinner/>;
     } else if (isError) {
         return <h5 className="text-center mt-5">Ошибка загрузки</h5>
-    }
-
-    const onDeleteClick = (id) => {
-        dispatch(deleteHero(id));
     }
 
     const renderHeroesList = (arr) => {
@@ -54,7 +61,7 @@ const HeroesList = () => {
         })
     }
 
-    const elements = renderHeroesList(heroes);
+    const elements = renderHeroesList(filteredHeroes);
     return (
         <TransitionGroup component="ul">
             {elements}
