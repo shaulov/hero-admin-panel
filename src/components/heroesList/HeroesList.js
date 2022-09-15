@@ -1,30 +1,33 @@
-import { useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useCallback, useMemo } from 'react';
+import { useSelector } from 'react-redux';
 import { CSSTransition, TransitionGroup } from 'react-transition-group';
 
-import { fetchHeroes, deleteHero, filteredHeroesSelector } from '../../store/heroesSlice/heroesSlice';
+import { useGetHeroesQuery, useDeleteHeroMutation } from '../../api/apiSlice';
 import HeroesListItem from "../heroesListItem/HeroesListItem";
 import Spinner from '../spinner/Spinner';
 import './heroes-list.scss';
 
 const HeroesList = () => {
-    const filteredHeroes = useSelector(filteredHeroesSelector);
-    const heroesLoadingStatus = useSelector(state => state.heroes.heroesLoadingStatus);
-    const dispatch = useDispatch();
+    const {data: heroes = [], isLoading, isError} = useGetHeroesQuery();
+    const [deleteHero] = useDeleteHeroMutation();
+    const activeFilter = useSelector(state => state.filters.activeFilter);
+    const filteredHeroes = useMemo(
+        () => {
+            const filteredHeroes = heroes.slice();
+            return activeFilter === 'all' ? filteredHeroes : filteredHeroes.filter((hero) => hero.element === activeFilter);
+        },
+        [heroes, activeFilter]
+    );
 
-    useEffect(() => {
-        dispatch(fetchHeroes());
+    const onDeleteClick = useCallback((id) => {
+        deleteHero(id);
         // eslint-disable-next-line
     }, []);
 
-    if (heroesLoadingStatus === "loading") {
+    if (isLoading) {
         return <Spinner/>;
-    } else if (heroesLoadingStatus === "error") {
+    } else if (isError) {
         return <h5 className="text-center mt-5">Ошибка загрузки</h5>
-    }
-
-    const onDeleteClick = (id) => {
-        dispatch(deleteHero(id));
     }
 
     const renderHeroesList = (arr) => {

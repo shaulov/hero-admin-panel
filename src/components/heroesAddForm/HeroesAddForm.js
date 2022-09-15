@@ -1,55 +1,50 @@
-import { useRef } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import { useState, useRef } from 'react';
 import { v4 as uuidv4 } from 'uuid';
-import store from '../../store';
-import { postHero } from '../../store/heroesSlice/heroesSlice';
-import { selectAll } from '../../store/filtersSlice/filtersSlice';
+import { useCreateHeroMutation, useGetFiltersQuery } from '../../api/apiSlice';
 import Spinner from '../spinner/Spinner';
 
 const HeroesAddForm = () => {
+    const [formData, setFormData] = useState({
+        id: uuidv4(),
+        name: '',
+        description: '',
+        element: '',
+    })
     const formRef = useRef(null);
-    const inputNameRef = useRef(null);
-    const selectRef = useRef(null);
-    const textAreaRef = useRef(null);
-    const {filtersLoadingStatus} = useSelector(state => state.filters);
-    const filters = selectAll(store.getState());
-    const dispatch = useDispatch();
+    const [createHero, {isLoading: isHeroesLoading}] = useCreateHeroMutation();
+    const {data: filters = [], isLoading: isFiltersLoading, isError: isFiltersError} = useGetFiltersQuery();
 
-    if (filtersLoadingStatus === "loading") {
+    if (isHeroesLoading) {
         return <Spinner/>;
     }
 
     const resetForm = () => {
         formRef.current.reset();
+        setFormData({
+            id: uuidv4(),
+            name: '',
+            description: '',
+            element: '',
+        });
     }
+
+    const handleChange = (evt) => {
+        const {value, name} = evt.target;
+        setFormData({...formData, [name]: value,});
+    };
 
     const handleSubmit = async (evt) => {
         evt.preventDefault();
 
-        const formData = {
-            id: uuidv4(),
-            name: inputNameRef.current.value,
-            description: textAreaRef.current.value,
-            element: selectRef.current.value,
-        }
-
-        try {
-            await dispatch(postHero(formData))
-                .then((response) => {
-                    if (response.meta.requestStatus === 'fulfilled') {
-                        resetForm();
-                    }
-                });
-        } catch (err) {
-            console.log(err);
-        }
+        createHero(formData).unwrap();
+        resetForm();
     }
 
-    const renderFilters = (filters, status) => {
-        if (status === 'loading') {
+    const renderFilters = (filters) => {
+        if (isFiltersLoading) {
             return <option>Загрузка элементов...</option>
         }
-        if (status === 'error') {
+        if (isFiltersError) {
             return <option>Ошибка загрузки</option>
         }
         
@@ -69,12 +64,12 @@ const HeroesAddForm = () => {
                 <label htmlFor="name" className="form-label fs-4">Имя нового героя</label>
                 <input 
                     required
-                    ref={inputNameRef}
                     type="text" 
                     name="name" 
                     className="form-control" 
                     id="name" 
                     placeholder="Как меня зовут?"
+                    onChange={handleChange}
                 />
             </div>
 
@@ -82,12 +77,12 @@ const HeroesAddForm = () => {
                 <label htmlFor="description" className="form-label fs-4">Описание</label>
                 <textarea
                     required
-                    ref={textAreaRef}
                     name="description" 
                     className="form-control" 
                     id="text" 
                     placeholder="Что я умею?"
                     style={{"height": '130px'}}
+                    onChange={handleChange}
                 />
             </div>
 
@@ -95,13 +90,13 @@ const HeroesAddForm = () => {
                 <label htmlFor="element" className="form-label">Выбрать элемент героя</label>
                 <select 
                     required
-                    ref={selectRef}
                     className="form-select" 
                     id="element" 
                     name="element"
+                    onChange={handleChange}
                 >
                         <option>Я владею элементом...</option>
-                        {renderFilters(filters, filtersLoadingStatus)}
+                        {renderFilters(filters)}
                 </select>
             </div>
 
